@@ -58,6 +58,9 @@ Absolutely.  Please [contact us](http://www.ivycat.com/contact/) and let us know
 
 == Changelog ==
 
+= 1.0.4 =
+* Bug fix: plugin now honors `tax shipping` selection under Shopp Setup/Taxes/Settings.
+
 = 1.0.3 =
 * Minor plugin housekeeping only; no bug fixes.
 * Style updates in WP Dashboard.
@@ -69,6 +72,9 @@ Absolutely.  Please [contact us](http://www.ivycat.com/contact/) and let us know
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+Please upgrade: importan bug fix.
 
 = 1.0.3 =
 Not urgent; no change to functionality; just plugin housekeeping and documentation.
