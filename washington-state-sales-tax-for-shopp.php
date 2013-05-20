@@ -58,17 +58,31 @@ class ShoppWATaxCalc{
         $city = urlencode( $Shopp->Shopping->data->Order->Shipping->city );
         $zip = $Shopp->Shopping->data->Order->Shipping->postcode;
         $tax= self::getTax( $address , $city, $zip );
-        //printf('<pre>%s</pre>', print_r( $tax, 1 ) );
         $taxrate = (string) $tax->attributes()->rate;
         $location_code = (string) $tax->attributes()->loccode;
-        if( isset( $Shopp->Order->data ) ){ $Shopp->Order->data['Location Code'] = $location_code; }
+        
+        if( isset( $Shopp->Order->data ) ) {
+            $Shopp->Order->data['Location Code'] = $location_code;
+        }
+
         $Shopp->Order->Cart->Totals->taxrate = $taxrate;
 		$subtotal = $Shopp->Order->Cart->Totals->subtotal;
         $shipping = $Shopp->Order->Cart->Totals->shipping;
 		$discount = is_numeric( $Shopp->Order->Cart->Totals->discount ) ? $Shopp->Order->Cart->Totals->discount : 0;
-        $Shopp->Order->Cart->Totals->tax = ( $subtotal + $shipping ) * $taxrate;
-        $Shopp->Order->Cart->Totals->total = $Shopp->Order->Cart->Totals->tax + $subtotal + $shipping - $discount;
         
+        // calculate taxes
+        if( shopp_setting( 'taxes' ) === on ) {
+            // include shipping in tax calc...
+            if( shopp_setting( 'tax_shipping' ) === on ) {
+                $Shopp->Order->Cart->Totals->tax = ( $subtotal + $shipping ) * $taxrate;
+            } else {
+                $Shopp->Order->Cart->Totals->tax = $subtotal * $taxrate;
+            }
+            $Shopp->Order->Cart->Totals->total = $Shopp->Order->Cart->Totals->tax + $subtotal + $shipping - $discount;
+        } else { // no taxes
+            $Shopp->Order->Cart->Totals->total = $subtotal + $shipping - $discount;
+        }
+      
     }
     
     public function options_page_init(){
