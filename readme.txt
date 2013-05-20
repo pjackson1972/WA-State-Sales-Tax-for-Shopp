@@ -1,14 +1,14 @@
 === Washington State Sales Tax for Shopp ===
-Contributors: ivycat, dgilfoy, sewmyheadon
+Contributors: ivycat, sewmyheadon, gehidore, dgilfoy
 Donate link: http://www.ivycat.com/contribute/
-Tags: tax, ecommerce, shopp, washington
+Tags: tax, taxes, destination based, sales tax, ecommerce, shopp, washington
 Requires at least: 3.4
-Tested up to: 3.4.1
-Stable tag: 1.0.3
+Tested up to: 3.6-beta3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin ties Shopp, an e-commerce plugin, into Washington State's Department of Revenue API to lookup destination-based sales tax and calculate it on the fly.
+This plugin ties Shopp, an e-commerce plugin for WordPress, into Washington State's Department of Revenue API to lookup destination-based sales tax and calculate it on the fly.
 
 == Description ==
 

@@ -1,16 +1,16 @@
-=== Washington State Sales Tax for Shopp ===
-Contributors: ivycat, dgilfoy, sewmyheadon
-Donate link: http://www.ivycat.com/contribute/
-Tags: tax, ecommerce, shopp, washington
-Requires at least: 3.4
-Tested up to: 3.4.1
-Stable tag: 1.0.3
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+# Washington State Sales Tax for Shopp #
+**Contributors:** ivycat, sewmyheadon, gehidore, dgilfoy  
+**Donate link:** http://www.ivycat.com/contribute/  
+**Tags:** tax, taxes, destination based, sales tax, ecommerce, shopp, washington  
+**Requires at least:** 3.4  
+**Tested up to:** 3.6-beta3  
+**Stable tag:** 1.0.4  
+**License:** GPLv2 or later  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
-This plugin ties Shopp, an e-commerce plugin, into Washington State's Department of Revenue API to lookup destination-based sales tax and calculate it on the fly.
+This plugin ties Shopp, an e-commerce plugin for WordPress, into Washington State's Department of Revenue API to lookup destination-based sales tax and calculate it on the fly.
 
-== Description ==
+## Description ##
 
 Washington State is a [destination-based sales tax](http://dor.wa.gov/Content/FindTaxesAndRates/RetailSalesTax/DestinationBased/MoreSST.aspx) state.  Meaning, you charge the tax rate of the destination you're shipping to, rather than the rate of where you're shipping from.
 
@@ -20,7 +20,7 @@ When enabled, the customer's zip and address information is passed up to the WA 
 
 [Find out more about Washington's Destination-based Sales Tax](http://dor.wa.gov/Content/FindTaxesAndRates/RetailSalesTax/DestinationBased/MoreSST.aspx)
 
-== Installation ==
+## Installation ##
 
 Like most WordPress plugins, you can install from within the WordPress Dashboard under Plugins/Add New.
 
@@ -31,50 +31,54 @@ If you wish to install manually:
 1. Go to Settings/WA Taxes for Shopp and click enable
 1. Shopp will automatically get the destination-based sales tax for all orders shipped to WA State.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions ##
 
-= Does this plugin work for Oregon, California, Idaho, Florida, etc? =
+### Does this plugin work for Oregon, California, Idaho, Florida, etc? ###
 
 Nope, just Washington State.
 
-= What about Washington DC? =
+### What about Washington DC? ###
 
 Sorry, just Washington State.
 
-= I'm not sure if I need to use this plugin.  I live in Washington, but don't know if I need to collect sales tax.  Can you help? =
+### I'm not sure if I need to use this plugin.  I live in Washington, but don't know if I need to collect sales tax.  Can you help? ###
 
 Unfortunately, we can't advise you what taxes you're liable to pay the State of Washington.
 
 We recommend that you contact the [Washington Department of Revenue](http://dor.wa.gov/content/ContactUs/default.aspx), or your accountant.
 
-= My accountant says I should use this plugin; can you help make sure it's installed correctly, provide customization, or help me with other Shopp questions?
+### My accountant says I should use this plugin; can you help make sure it's installed correctly, provide customization, or help me with other Shopp questions?
 
 Absolutely.  Please [contact us](http://www.ivycat.com/contact/) and let us know what you need and we'll be happy to provide an estimate.
+###
+## Screenshots ##
 
-== Screenshots ==
+###1. Enabling the plugin screenshot-1.png###
+![Enabling the plugin screenshot-1.png](http://s.wordpress.org/extend/plugins/washington-state-sales-tax-for-shopp/screenshot-1.png)
 
-1. Enabling the plugin screenshot-1.png
-2. WA State Tax for Shopp in action screenshot-2.png
+###2. WA State Tax for Shopp in action screenshot-2.png###
+![WA State Tax for Shopp in action screenshot-2.png](http://s.wordpress.org/extend/plugins/washington-state-sales-tax-for-shopp/screenshot-2.png)
 
-== Changelog ==
 
-= 1.0.3 =
+## Changelog ##
+
+### 1.0.3 ###
 * Minor plugin housekeeping only; no bug fixes.
 * Style updates in WP Dashboard.
 
-= 1.0.2 =
+### 1.0.2 ###
 * Minor housekeeping, bug fix for tax collection on promotional pricing.
 
-= 1.0 =
+### 1.0 ###
 * Initial release.
 
-== Upgrade Notice ==
+## Upgrade Notice ##
 
-= 1.0.3 =
+### 1.0.3 ###
 Not urgent; no change to functionality; just plugin housekeeping and documentation.
 
-= 1.0.2 =
+### 1.0.2 ###
 Fixed tax collection bug on promo items; important update.
 
-= 1.0 =
+### 1.0 ###
 * You just installed, yeah?
