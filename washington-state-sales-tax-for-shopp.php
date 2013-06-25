@@ -43,6 +43,7 @@ class ShoppWATaxCalc{
 		if( $this->enabled === 'enable' ):
 			add_action( 'shopp_cart_retotal', array( &$this , 'set_taxes' ) );
 		endif;
+        add_action( 'admin_head', array( &$this, 'set_submenu_order' ) );
 	}
 	
 	public function upon_install(){
@@ -89,13 +90,38 @@ class ShoppWATaxCalc{
 	public function options_page_init(){
 		 if( !current_user_can( 'administrator' ) ) return;
 			$hooks = array();
-			$hooks[] = add_options_page(__('WA Taxes for Shopp'), __('WA Taxes for Shopp'), 'read', 'destination-taxes', array($this, 'option_page'));
+            $hooks[] = add_submenu_page( 'shopp-settings', __( 'Washington State Taxes for Shopp' ), __( 'WA Tax' ), 'read', 'washington-taxes', array( $this, 'option_page' ) );
 
 			foreach($hooks as $hook) {
 				add_action("admin_print_styles-{$hook}", array($this, 'load_assets'));
 			}
 	}
-	
+
+    public function set_submenu_order() {
+        // move WA Tax menu under Taxes
+        global $submenu;
+        $settings = $submenu['shopp-settings'];
+        
+        foreach ( $settings as $key => $menu ) {
+            if( $menu[0] == 'Taxes' ) {
+                $key++;
+                $head = array_slice( $settings, 0, $key );
+                $tail = array_slice( $settings, $key );
+            } elseif( $menu[0] == 'WA Tax' ) {
+                $watax = array_slice( $settings, $key );
+            }
+        }
+
+        foreach( $tail as $k=>$t ) {
+            if( $t[0] != 'WA Tax' ) {
+                $newtail[] = $t;
+            }
+        }
+        $tail = $newtail;
+
+        $submenu['shopp-settings'] = array_merge( $head, array_merge( $watax, $tail ) );
+    }   
+
 	public function load_assets(){
 		
 	}
