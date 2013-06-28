@@ -30,90 +30,144 @@
 
 new ShoppWATaxCalc();
 
-class ShoppWATaxCalc{
+class ShoppWATaxCalc {
 	
 	protected $dor_url;
 	protected $enabled;
 	
-	public function __construct(){
-		add_action('admin_menu', array(&$this, 'options_page_init') );
-		add_action( 'register_activaton_hook', array(&$this, 'upon_install') );
+	public function __construct() {
+		add_action( 'admin_menu', array( &$this, 'options_page_init' ) );
+		add_action( 'register_activaton_hook', array( &$this, 'upon_install' ) );
 		$this->dor_url = 'http://dor.wa.gov';
 		$this->enabled = get_option( 'shopp_wa_destination_tax_enabled' );
-		if( $this->enabled === 'enable' ):
+		if ( $this->enabled['tax_toggle'] === 'enable' ) {
 			add_action( 'shopp_cart_retotal', array( &$this , 'set_taxes' ) );
-		endif;
+        }
         add_action( 'admin_head', array( &$this, 'set_submenu_order' ) );
+        // filter cart template output
+        if ( $this->enabled['downloads_toggle'] === 'enable' ) {
+            add_filter( 'shopp_themeapi_cart', array( &$this, 'downloads_tax_filter' ), 11, 4 );
+        }
+        // update hook
+        add_action( 'admin_init', array( &$this, 'on_upgrade' ) );
 	}
 	
-	public function upon_install(){
-		add_option( 'shopp_wa_destination_tax_enabled', 'disable' );
+	public function upon_install() {
+        $db_option = array(
+            'tax_toggle'        => 'disable',
+            'downloads_toggle'  => 'disable'
+        );
+		add_option( 'shopp_wa_destination_tax_enabled', $db_option );
+
 	}
-	
-	public function set_taxes( ){
+
+    public function on_upgrade() {
+        $option_name = 'shopp_wa_destination_tax_enabled';
+        $db_option = get_option( $option_name );
+        // if they're still using the old version
+        if ( false !== $db_option AND !is_array( $db_option ) ) {
+            // update to new option layout preserving the settings
+            $db_option = array(
+                'tax_toggle'        => $db_option,
+                'downloads_toggle'  => 'disable'
+            );
+            update_option( $option_name, $db_option );
+        }
+    }
+	// create filter function
+    public function downloads_tax_filter( $result, $options, $tag, $Cart ) {
+        // if this is a downloadable make it shipped so it's taxed
+
+        if ( 'needsshippingestimates' == $tag ) {
+            $result = true; // force enable estimates
+        }
+
+        if ( 'shippingestimates' == $tag ) { // return a zip field for zip calculation
+            ob_start();
+            ?>
+                <div class="ship-estimates">
+                    <input type="hidden" name="shipping[country]" id="shipping-country" value="US">
+                    <span>
+                        <input type="text" name="shipping[postcode]" id="shipping-postcode" size="6" value="">&nbsp;
+                    </span>
+                    <input type="submit" name="update" value="Estimate Shipping &amp; Taxes" class="update-button">
+                </div>
+            <?php
+            $result = ob_get_clean();
+        }
+
+        return $result;
+    }
+
+	public function set_taxes() {
 		global $Shopp;
 		$Order =& ShoppOrder();
 		$state = strtolower( $Shopp->Shopping->data->Order->Shipping->state );
-		if( $state != 'wa'  ) return false;
+		if ( $state != 'wa'  ) return false;
 		
 		$address = urlencode( $Shopp->Shopping->data->Order->Shipping->address . ' ' . $Shopp->Shopping->data->Order->Shipping->saddress );
 		$city = urlencode( $Shopp->Shopping->data->Order->Shipping->city );
 		$zip = $Shopp->Shopping->data->Order->Shipping->postcode;
 		$tax= self::getTax( $address , $city, $zip );
-		$taxrate = (string) $tax->attributes()->rate;
-		$location_code = (string) $tax->attributes()->loccode;
+		$taxrate = ( string ) $tax->attributes()->rate;
+		$location_code = ( string ) $tax->attributes()->loccode;
 		
-		if( isset( $Shopp->Order->data ) ) {
+		if ( isset( $Shopp->Order->data ) ) {
 			$Shopp->Order->data['Location Code'] = $location_code;
 		}
 
 		$Shopp->Order->Cart->Totals->taxrate = $taxrate;
 		$subtotal = $Shopp->Order->Cart->Totals->subtotal;
 		$shipping = $Shopp->Order->Cart->Totals->shipping;
-		$discount = is_numeric( $Shopp->Order->Cart->Totals->discount ) ? $Shopp->Order->Cart->Totals->discount : 0;
+		if ( is_numeric( $Shopp->Order->Cart->Totals->discount ) ) {
+            $discount = $Shopp->Order->Cart->Totals->discount;
+        } else {
+            $discount = 0;
+        }
 		
 		// calculate taxes
-		if( shopp_setting( 'taxes' ) === on ) {
+		if ( shopp_setting( 'taxes' ) === on ) {
 			// include shipping in tax calc...
-			if( shopp_setting( 'tax_shipping' ) === on ) {
+			if ( shopp_setting( 'tax_shipping' ) === on ) {
 				$Shopp->Order->Cart->Totals->tax = ( $subtotal + $shipping ) * $taxrate;
 			} else {
 				$Shopp->Order->Cart->Totals->tax = $subtotal * $taxrate;
 			}
 			$Shopp->Order->Cart->Totals->total = $Shopp->Order->Cart->Totals->tax + $subtotal + $shipping - $discount;
+            
 		} else { // no taxes
 			$Shopp->Order->Cart->Totals->total = $subtotal + $shipping - $discount;
 		}
 	  
 	}
 	
-	public function options_page_init(){
-		 if( !current_user_can( 'administrator' ) ) return;
+	public function options_page_init() {
+		 if ( !current_user_can( 'administrator' ) ) return;
 			$hooks = array();
-            $hooks[] = add_submenu_page( 'shopp-settings', __( 'Washington State Taxes for Shopp' ), __( 'WA Tax' ), 'read', 'washington-taxes', array( $this, 'option_page' ) );
+            $hooks[] = add_submenu_page( 'shopp-settings', __( 'Washington State Taxes for Shopp' ), __( 'WA State Tax' ), 'read', 'washington-taxes', array( $this, 'option_page' ) );
 
-			foreach($hooks as $hook) {
-				add_action("admin_print_styles-{$hook}", array($this, 'load_assets'));
+			foreach ( $hooks as $hook ) {
+				add_action( "admin_print_styles-{$hook}", array( $this, 'load_assets' ) );
 			}
 	}
 
     public function set_submenu_order() {
-        // move WA Tax menu under Taxes
+        // move WA State Tax menu under Taxes
         global $submenu;
         $settings = $submenu['shopp-settings'];
         
         foreach ( $settings as $key => $menu ) {
-            if( $menu[0] == 'Taxes' ) {
+            if ( $menu[0] == 'Taxes' ) {
                 $key++;
                 $head = array_slice( $settings, 0, $key );
                 $tail = array_slice( $settings, $key );
-            } elseif( $menu[0] == 'WA Tax' ) {
+            } elseif ( $menu[0] == 'WA State Tax' ) {
                 $watax = array_slice( $settings, $key );
             }
         }
 
-        foreach( $tail as $k=>$t ) {
-            if( $t[0] != 'WA Tax' ) {
+        foreach ( $tail as $k=>$t ) {
+            if ( $t[0] != 'WA State Tax' ) {
                 $newtail[] = $t;
             }
         }
@@ -122,34 +176,42 @@ class ShoppWATaxCalc{
         $submenu['shopp-settings'] = array_merge( $head, array_merge( $watax, $tail ) );
     }   
 
-	public function load_assets(){
+	public function load_assets() {
 		
 	}
 	
-	public function set_status(){
-		if( $_POST['wadbt_status'] === 'enable' ){
-			update_option( 'shopp_wa_destination_tax_enabled', 'enable' );
-		}else{
-			update_option( 'shopp_wa_destination_tax_enabled', 'disable' );
-		}
+	public function set_status() {
+        $option_name = 'shopp_wa_destination_tax_enabled';
+        if ( !empty( $_POST['wadbt_status'] ) ) {
+            // loop and build the array to save
+            foreach ( $_POST['wadbt_status'] AS $key => $status ) {
+                if ( $status === 'enable' ) {
+                    $db_option[ $key ] = 'enable';
+                } else {
+                    $db_option[ $key ] = 'disable';
+                }
+            }
+        }
+        // save new options
+        update_option( $option_name, $db_option );
 	}
 	
-	public function option_page(){
-		if( $_SERVER['REQUEST_METHOD'] == 'POST' ) self::set_status();
+	public function option_page() {
+		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) self::set_status();
 		require_once 'assets/views/option-page-view.php';
 	}
 	
-	protected function getTax( $addr, $city, $zip ){
+	protected function getTax( $addr, $city, $zip ) {
 		$req = $this->dor_url . "/AddressRates.aspx?output=xml&addr=$addr&city=$city&zip=$zip";
 		return self::get_decoded_url( $req );
 	}
 	
-	protected function get_decoded_url( $url ){
+	protected function get_decoded_url( $url ) {
 		$result = wp_remote_get( $url );
-		if( !is_wp_error( $result ) ){
+		if ( !is_wp_error( $result ) ) {
 			$xml = new SimpleXMLElement( $result['body'] );
 			
-			switch($xml->attributes()->code){
+			switch( $xml->attributes()->code ) {
 				case 0:
 					// Code 0 means address was perfect
 					break;
@@ -168,8 +230,9 @@ class ShoppWATaxCalc{
 				case 5:
 					$xml->msg = "Error: Internal error.";
 			}
-		}
-		else $xml = "Error: Could not load XML.";
+		} else {
+            $xml = "Error: Could not load XML.";
+        }
 
 		return  $xml;
 	}
