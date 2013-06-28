@@ -3,16 +3,18 @@
 **Donate link:** http://www.ivycat.com/contribute/  
 **Tags:** tax, taxes, destination based, sales tax, ecommerce, shopp, washington  
 **Requires at least:** 3.4  
-**Tested up to:** 3.6-beta3  
-**Stable tag:** 1.0.4  
+**Tested up to:** 3.6-beta4-24523  
+**Stable tag:** 1.0.5  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
-This plugin ties Shopp, an e-commerce plugin for WordPress, into Washington State's Department of Revenue API to lookup destination-based sales tax and calculate it on the fly.
+This plugin ties Shopp, a WordPress e-commerce plugin, into Washington State's Department of Revenue API to lookup destination-based sales tax and calculate it on the fly.
 
 ## Description ##
 
-Washington State is a [destination-based sales tax](http://dor.wa.gov/Content/FindTaxesAndRates/RetailSalesTax/DestinationBased/MoreSST.aspx) state.  Meaning, you charge the tax rate of the destination you're shipping to, rather than the rate of where you're shipping from.
+__Washington State is a [destination-based sales tax](http://dor.wa.gov/Content/FindTaxesAndRates/RetailSalesTax/DestinationBased/MoreSST.aspx) state.__  As a Washington-based business, if you sell taxable items within WA, you charge the tax rate of the destination you're shipping to, rather than the rate of where you're shipping from.
+
+When selling digital goods, the billing address is use to calculate tax.
 
 Most e-commerce platforms have relatively rudimentary tax calculation tools and tables.  [Shopp](https://shopplugin.net/), while robust, doesn't have the ability to calculate the actual sales tax in Washington State based on _destination_ address and zip.
 
@@ -22,14 +24,15 @@ When enabled, the customer's zip and address information is passed up to the WA 
 
 ## Installation ##
 
-Like most WordPress plugins, you can install from within the WordPress Dashboard under Plugins/Add New.
+Like most WordPress plugins, you can install from within the WordPress Admin under _Plugins > Add New_.
 
-If you wish to install manually:
+To install manually:
 
 1. Upload the `washington-state-sales-tax-for-shopp` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Go to Settings/WA Taxes for Shopp and click enable
-1. Shopp will automatically get the destination-based sales tax for all orders shipped to WA State.
+1. Go to _Shopp Setup > WA State Tax_ and click _Enabled_ under __Washington Sales Tax__
+1. If you wish to tax digital downloads as well, click Enabled under __Tax Downloads__
+1. Shopp will automatically get the destination-based sales tax for all orders shipped to Washington State.
 
 ## Frequently Asked Questions ##
 
@@ -45,11 +48,11 @@ Sorry, just Washington State.
 
 Unfortunately, we can't advise you what taxes you're liable to pay the State of Washington.
 
-We recommend that you contact the [Washington Department of Revenue](http://dor.wa.gov/content/ContactUs/default.aspx), or your accountant.
+We recommend that you contact the [Washington Department of Revenue](http://dor.wa.gov/content/ContactUs/default.aspx) or your accountant.
 
 ### My accountant says I should use this plugin; can you help make sure it's installed correctly, provide customization, or help me with other Shopp questions?
 
-Absolutely.  Please [contact us](http://www.ivycat.com/contact/) and let us know what you need and we'll be happy to provide an estimate.
+Absolutely.  Please [contact us](http://www.ivycat.com/web-design/request-a-quote/) and let us know what you need and we'll be happy to provide an estimate.
 ###
 ## Screenshots ##
 
@@ -61,6 +64,12 @@ Absolutely.  Please [contact us](http://www.ivycat.com/contact/) and let us know
 
 
 ## Changelog ##
+
+### 1.0.5 ###
+*** Bug fix:** plugin now allows taxing of digital downloads.  
+*** Admin panel:** incorporated toggle to enable/disable taxing of downloads.  
+* Updated documentation.
+* Moved settings page to _Shopp > Setup_
 
 ### 1.0.4 ###
 *** Bug fix:** plugin now honors `tax shipping` selection under Shopp Setup/Taxes/Settings.  
@@ -76,6 +85,9 @@ Absolutely.  Please [contact us](http://www.ivycat.com/contact/) and let us know
 * Initial release.
 
 ## Upgrade Notice ##
+
+### 1.0.5 ###
+* Important update if you sell downloadable products within Washington. 
 
 ### 1.0.4 ###
 **Please upgrade:** importan bug fix.  
