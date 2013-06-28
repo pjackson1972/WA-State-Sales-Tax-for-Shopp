@@ -5,7 +5,7 @@
 	Author: IvyCat Web Services
 	Author URI: http://www.ivycat.com
 	Description: Connect Shopp with Washington State's Department of Revenue API for on-the-fly sales tax rate lookup and calculation.
-	Version: 1.0.4
+	Version: 1.0.5
 	License: GNU General Public License v2.0
 	License URI: http://www.gnu.org/licenses/gpl-2.0.html
  
@@ -42,62 +42,62 @@ class ShoppWATaxCalc {
 		$this->enabled = get_option( 'shopp_wa_destination_tax_enabled' );
 		if ( $this->enabled['tax_toggle'] === 'enable' ) {
 			add_action( 'shopp_cart_retotal', array( &$this , 'set_taxes' ) );
-        }
-        add_action( 'admin_head', array( &$this, 'set_submenu_order' ) );
-        // filter cart template output
-        if ( $this->enabled['downloads_toggle'] === 'enable' ) {
-            add_filter( 'shopp_themeapi_cart', array( &$this, 'downloads_tax_filter' ), 11, 4 );
-        }
-        // update hook
-        add_action( 'admin_init', array( &$this, 'on_upgrade' ) );
+		}
+		add_action( 'admin_head', array( &$this, 'set_submenu_order' ) );
+		// filter cart template output
+		if ( $this->enabled['downloads_toggle'] === 'enable' ) {
+			add_filter( 'shopp_themeapi_cart', array( &$this, 'downloads_tax_filter' ), 11, 4 );
+		}
+		// update hook
+		add_action( 'admin_init', array( &$this, 'on_upgrade' ) );
 	}
 	
 	public function upon_install() {
-        $db_option = array(
-            'tax_toggle'        => 'disable',
-            'downloads_toggle'  => 'disable'
-        );
+		$db_option = array(
+			'tax_toggle'        => 'disable',
+			'downloads_toggle'  => 'disable'
+		);
 		add_option( 'shopp_wa_destination_tax_enabled', $db_option );
 
 	}
 
-    public function on_upgrade() {
-        $option_name = 'shopp_wa_destination_tax_enabled';
-        $db_option = get_option( $option_name );
-        // if they're still using the old version
-        if ( false !== $db_option AND !is_array( $db_option ) ) {
-            // update to new option layout preserving the settings
-            $db_option = array(
-                'tax_toggle'        => $db_option,
-                'downloads_toggle'  => 'disable'
-            );
-            update_option( $option_name, $db_option );
-        }
-    }
+	public function on_upgrade() {
+		$option_name = 'shopp_wa_destination_tax_enabled';
+		$db_option = get_option( $option_name );
+		// if they're still using the old version
+		if ( false !== $db_option AND !is_array( $db_option ) ) {
+			// update to new option layout preserving the settings
+			$db_option = array(
+				'tax_toggle'        => $db_option,
+				'downloads_toggle'  => 'disable'
+			);
+			update_option( $option_name, $db_option );
+		}
+	}
 	// create filter function
-    public function downloads_tax_filter( $result, $options, $tag, $Cart ) {
-        // if this is a downloadable make it shipped so it's taxed
+	public function downloads_tax_filter( $result, $options, $tag, $Cart ) {
+		// if this is a downloadable make it shipped so it's taxed
 
-        if ( 'needsshippingestimates' == $tag ) {
-            $result = true; // force enable estimates
-        }
+		if ( 'needsshippingestimates' == $tag ) {
+			$result = true; // force enable estimates
+		}
 
-        if ( 'shippingestimates' == $tag ) { // return a zip field for zip calculation
-            ob_start();
-            ?>
-                <div class="ship-estimates">
-                    <input type="hidden" name="shipping[country]" id="shipping-country" value="US">
-                    <span>
-                        <input type="text" name="shipping[postcode]" id="shipping-postcode" size="6" value="">&nbsp;
-                    </span>
-                    <input type="submit" name="update" value="Estimate Shipping &amp; Taxes" class="update-button">
-                </div>
-            <?php
-            $result = ob_get_clean();
-        }
+		if ( 'shippingestimates' == $tag ) { // return a zip field for zip calculation
+			ob_start();
+			?>
+				<div class="ship-estimates">
+					<input type="hidden" name="shipping[country]" id="shipping-country" value="US">
+					<span>
+						<input type="text" name="shipping[postcode]" id="shipping-postcode" size="6" value="">&nbsp;
+					</span>
+					<input type="submit" name="update" value="Estimate Shipping &amp; Taxes" class="update-button">
+				</div>
+			<?php
+			$result = ob_get_clean();
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
 	public function set_taxes() {
 		global $Shopp;
@@ -120,10 +120,10 @@ class ShoppWATaxCalc {
 		$subtotal = $Shopp->Order->Cart->Totals->subtotal;
 		$shipping = $Shopp->Order->Cart->Totals->shipping;
 		if ( is_numeric( $Shopp->Order->Cart->Totals->discount ) ) {
-            $discount = $Shopp->Order->Cart->Totals->discount;
-        } else {
-            $discount = 0;
-        }
+			$discount = $Shopp->Order->Cart->Totals->discount;
+		} else {
+			$discount = 0;
+		}
 		
 		// calculate taxes
 		if ( shopp_setting( 'taxes' ) === on ) {
@@ -134,7 +134,7 @@ class ShoppWATaxCalc {
 				$Shopp->Order->Cart->Totals->tax = $subtotal * $taxrate;
 			}
 			$Shopp->Order->Cart->Totals->total = $Shopp->Order->Cart->Totals->tax + $subtotal + $shipping - $discount;
-            
+			
 		} else { // no taxes
 			$Shopp->Order->Cart->Totals->total = $subtotal + $shipping - $discount;
 		}
@@ -144,56 +144,56 @@ class ShoppWATaxCalc {
 	public function options_page_init() {
 		 if ( !current_user_can( 'administrator' ) ) return;
 			$hooks = array();
-            $hooks[] = add_submenu_page( 'shopp-settings', __( 'Washington State Taxes for Shopp' ), __( 'WA State Tax' ), 'read', 'washington-taxes', array( $this, 'option_page' ) );
+			$hooks[] = add_submenu_page( 'shopp-settings', __( 'Washington State Taxes for Shopp' ), __( 'WA State Tax' ), 'read', 'washington-taxes', array( $this, 'option_page' ) );
 
 			foreach ( $hooks as $hook ) {
 				add_action( "admin_print_styles-{$hook}", array( $this, 'load_assets' ) );
 			}
 	}
 
-    public function set_submenu_order() {
-        // move WA State Tax menu under Taxes
-        global $submenu;
-        $settings = $submenu['shopp-settings'];
-        
-        foreach ( $settings as $key => $menu ) {
-            if ( $menu[0] == 'Taxes' ) {
-                $key++;
-                $head = array_slice( $settings, 0, $key );
-                $tail = array_slice( $settings, $key );
-            } elseif ( $menu[0] == 'WA State Tax' ) {
-                $watax = array_slice( $settings, $key );
-            }
-        }
+	public function set_submenu_order() {
+		// move WA State Tax menu under Taxes
+		global $submenu;
+		$settings = $submenu['shopp-settings'];
+		
+		foreach ( $settings as $key => $menu ) {
+			if ( $menu[0] == 'Taxes' ) {
+				$key++;
+				$head = array_slice( $settings, 0, $key );
+				$tail = array_slice( $settings, $key );
+			} elseif ( $menu[0] == 'WA State Tax' ) {
+				$watax = array_slice( $settings, $key );
+			}
+		}
 
-        foreach ( $tail as $k=>$t ) {
-            if ( $t[0] != 'WA State Tax' ) {
-                $newtail[] = $t;
-            }
-        }
-        $tail = $newtail;
+		foreach ( $tail as $k=>$t ) {
+			if ( $t[0] != 'WA State Tax' ) {
+				$newtail[] = $t;
+			}
+		}
+		$tail = $newtail;
 
-        $submenu['shopp-settings'] = array_merge( $head, array_merge( $watax, $tail ) );
-    }   
+		$submenu['shopp-settings'] = array_merge( $head, array_merge( $watax, $tail ) );
+	}   
 
 	public function load_assets() {
 		
 	}
 	
 	public function set_status() {
-        $option_name = 'shopp_wa_destination_tax_enabled';
-        if ( !empty( $_POST['wadbt_status'] ) ) {
-            // loop and build the array to save
-            foreach ( $_POST['wadbt_status'] AS $key => $status ) {
-                if ( $status === 'enable' ) {
-                    $db_option[ $key ] = 'enable';
-                } else {
-                    $db_option[ $key ] = 'disable';
-                }
-            }
-        }
-        // save new options
-        update_option( $option_name, $db_option );
+		$option_name = 'shopp_wa_destination_tax_enabled';
+		if ( !empty( $_POST['wadbt_status'] ) ) {
+			// loop and build the array to save
+			foreach ( $_POST['wadbt_status'] AS $key => $status ) {
+				if ( $status === 'enable' ) {
+					$db_option[ $key ] = 'enable';
+				} else {
+					$db_option[ $key ] = 'disable';
+				}
+			}
+		}
+		// save new options
+		update_option( $option_name, $db_option );
 	}
 	
 	public function option_page() {
@@ -231,8 +231,8 @@ class ShoppWATaxCalc {
 					$xml->msg = "Error: Internal error.";
 			}
 		} else {
-            $xml = "Error: Could not load XML.";
-        }
+			$xml = "Error: Could not load XML.";
+		}
 
 		return  $xml;
 	}
