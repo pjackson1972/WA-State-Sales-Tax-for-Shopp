@@ -9,6 +9,14 @@ if ( !empty( $_POST['wadbt_status'] ) ) {
 	<div id="icon-edit" class="icon32"></div>
 	<h2>WA State Sales Tax for Shopp Settings</h2>
 	<div id="options-wrapper">
+	<?php
+	if ( !empty( $_POST ) ) {
+		if ( true === $response ) {
+			echo '<div id="message" class="updated">Settings saved successfully</div>';
+		} else {
+			echo '<div id="message" class="error">Oops, there was an error saving settings.</div>';
+		}
+	}
 		<form action="" method="post">
 			<h3>Washington Sales Tax:</h3>
 			<p>Enable to connect to the Washington Department of Revenue to lookup tax rates and calculate destination-based sales tax on the fly.</p>
@@ -39,7 +47,7 @@ if ( !empty( $_POST['wadbt_status'] ) ) {
 					<td>
 						<fieldset>
 							<legend class="screen-reader-text"><span>Tax Downloads</span></legend>
-							<input id="wadbt_enable_downloads" class="tog" type="radio" name="wadbt_status[downloads_toggle]" value="enable" <?php checked( $enabled['downloads_toggle'], 'enable' ); ?> />
+							<input id="wadbt_enable_downloads" class="tog" type="radio" name="wadbt_status[downloads_toggle]" onclick="if(document.getElementById('wadbt_enable_tax').checked !== true ) { this.checked = false; document.getElementById('wadbt_disable_downloads').checked = true; }" value="enable" <?php checked( $enabled['downloads_toggle'], 'enable' ); ?> />
 							<label for="wadbt_enable_downloads">Enabled</label>
 							<br>
 							<input id="wadbt_disable_downloads" class="tog" type="radio" name="wadbt_status[downloads_toggle]" value="disable" <?php checked( $enabled['downloads_toggle'], 'disable' ); ?> />
