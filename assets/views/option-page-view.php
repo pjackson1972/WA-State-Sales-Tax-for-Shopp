@@ -17,6 +17,7 @@ if ( !empty( $_POST['wadbt_status'] ) ) {
 			echo '<div id="message" class="error">Oops, there was an error saving settings.</div>';
 		}
 	}
+	?>
 		<form action="" method="post">
 			<h3>Washington Sales Tax:</h3>
 			<p>Enable to connect to the Washington Department of Revenue to lookup tax rates and calculate destination-based sales tax on the fly.</p>
