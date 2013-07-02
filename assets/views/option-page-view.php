@@ -47,7 +47,7 @@ if ( !empty( $_POST['wadbt_status'] ) ) {
 					<td>
 						<fieldset>
 							<legend class="screen-reader-text"><span>Tax Downloads</span></legend>
-							<input id="wadbt_enable_downloads" class="tog" type="radio" name="wadbt_status[downloads_toggle]" onclick="if(document.getElementById('wadbt_enable_tax').checked !== true ) { this.checked = false; document.getElementById('wadbt_disable_downloads').checked = true; }" value="enable" <?php checked( $enabled['downloads_toggle'], 'enable' ); ?> />
+							<input id="wadbt_enable_downloads" class="tog" type="radio" name="wadbt_status[downloads_toggle]" value="enable" <?php checked( $enabled['downloads_toggle'], 'enable' ); ?> />
 							<label for="wadbt_enable_downloads">Enabled</label>
 							<br>
 							<input id="wadbt_disable_downloads" class="tog" type="radio" name="wadbt_status[downloads_toggle]" value="disable" <?php checked( $enabled['downloads_toggle'], 'disable' ); ?> />

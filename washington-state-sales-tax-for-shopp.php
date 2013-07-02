@@ -44,6 +44,7 @@ class ShoppWATaxCalc {
 			add_action( 'shopp_cart_retotal', array( &$this , 'set_taxes' ) );
 		}
 		add_action( 'admin_head', array( &$this, 'set_submenu_order' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_script' ) );
 		// filter cart template output
 		if ( $this->enabled['downloads_toggle'] === 'enable' ) {
 			add_filter( 'shopp_themeapi_cart', array( &$this, 'downloads_tax_filter' ), 11, 4 );
@@ -73,6 +74,13 @@ class ShoppWATaxCalc {
 				'downloads_toggle'  => 'disable'
 			);
 			update_option( $option_name, $db_option );
+		}
+	}
+	
+	// admin script
+	public function admin_script( $hook ) {
+		if ( 'setup_page_washington-taxes' == $hook ) {
+			wp_enqueue_script( 'watax_admin_js', plugins_url( 'assets/js/watax-admin.js', __FILE__ ), array( 'jquery' ) );
 		}
 	}
 
