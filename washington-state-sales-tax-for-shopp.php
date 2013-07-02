@@ -98,7 +98,7 @@ class ShoppWATaxCalc {
 				<div class="ship-estimates">
 					<input type="hidden" name="shipping[country]" id="shipping-country" value="US">
 					<span>
-					<?php shopp('customer.shipping-postcode') ;?>
+					<?php shopp( 'customer.shipping-postcode' ); ?>
 					</span>
 					<input type="submit" name="update" value="Estimate Shipping &amp; Taxes" class="update-button">
 				</div>
@@ -112,7 +112,7 @@ class ShoppWATaxCalc {
 	// force zip entry script
 	public function force_zip_tax_script() {
 		if ( is_cart_page() ) {
-			wp_enqueue_scripts( 'zip_check', plugins_url( 'assets/js/zip-required.js', __FILE__ ), array( 'jquery' ) );
+			wp_enqueue_script( 'zip_check', plugins_url( 'assets/js/zip-required.js', __FILE__ ), array( 'jquery' ) );
 			wp_localize_script( 'zip_check', 'checkoutUrl', shopp( 'checkout', 'url', 'return=true' ) );
 		}
 	}
