@@ -44,9 +44,11 @@ class ShoppWATaxCalc {
 			add_action( 'shopp_cart_retotal', array( &$this , 'set_taxes' ) );
 		}
 		add_action( 'admin_head', array( &$this, 'set_submenu_order' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'admin_script' ) );
 		// filter cart template output
 		if ( $this->enabled['downloads_toggle'] === 'enable' ) {
 			add_filter( 'shopp_themeapi_cart', array( &$this, 'downloads_tax_filter' ), 11, 4 );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'force_zip_tax_script' ) );
 		}
 		// update hook
 		add_action( 'admin_init', array( &$this, 'on_upgrade' ) );
@@ -74,6 +76,14 @@ class ShoppWATaxCalc {
 			update_option( $option_name, $db_option );
 		}
 	}
+	
+	// admin script
+	public function admin_script( $hook ) {
+		if ( 'setup_page_washington-taxes' == $hook ) {
+			wp_enqueue_script( 'watax_admin_js', plugins_url( 'assets/js/watax-admin.js', __FILE__ ), array( 'jquery' ) );
+		}
+	}
+
 	// create filter function
 	public function downloads_tax_filter( $result, $options, $tag, $Cart ) {
 		// if this is a downloadable make it shipped so it's taxed
@@ -88,7 +98,7 @@ class ShoppWATaxCalc {
 				<div class="ship-estimates">
 					<input type="hidden" name="shipping[country]" id="shipping-country" value="US">
 					<span>
-						<input type="text" name="shipping[postcode]" id="shipping-postcode" size="6" value="">&nbsp;
+					<?php shopp( 'customer.shipping-postcode' ); ?>
 					</span>
 					<input type="submit" name="update" value="Estimate Shipping &amp; Taxes" class="update-button">
 				</div>
@@ -97,6 +107,14 @@ class ShoppWATaxCalc {
 		}
 
 		return $result;
+	}
+
+	// force zip entry script
+	public function force_zip_tax_script() {
+		if ( is_cart_page() ) {
+			wp_enqueue_script( 'zip_check', plugins_url( 'assets/js/zip-required.js', __FILE__ ), array( 'jquery' ) );
+			wp_localize_script( 'zip_check', 'checkoutUrl', shopp( 'checkout', 'url', 'return=true' ) );
+		}
 	}
 
 	public function set_taxes() {
@@ -134,7 +152,7 @@ class ShoppWATaxCalc {
 				$Shopp->Order->Cart->Totals->tax = $subtotal * $taxrate;
 			}
 			$Shopp->Order->Cart->Totals->total = $Shopp->Order->Cart->Totals->tax + $subtotal + $shipping - $discount;
-			
+
 		} else { // no taxes
 			$Shopp->Order->Cart->Totals->total = $subtotal + $shipping - $discount;
 		}
@@ -183,6 +201,9 @@ class ShoppWATaxCalc {
 	public function set_status() {
 		$option_name = 'shopp_wa_destination_tax_enabled';
 		if ( !empty( $_POST['wadbt_status'] ) ) {
+			if ( $_POST['wadbt_status']['tax_toggle'] == 'disable' ) {
+				$_POST['wadbt_status']['downloads_toggle'] = 'disable';
+			}
 			// loop and build the array to save
 			foreach ( $_POST['wadbt_status'] AS $key => $status ) {
 				if ( $status === 'enable' ) {
@@ -192,12 +213,21 @@ class ShoppWATaxCalc {
 				}
 			}
 		}
-		// save new options
-		update_option( $option_name, $db_option );
+		// check for options to be saved
+		$prior_status = get_option( $option_name );
+		if ( $prior_status == $db_option ) { // already set
+			$result = true;
+		} else { // save it
+			$result = update_option( $option_name, $db_option );
+		}
+		// return the result for user notification
+		return $result;
 	}
 	
 	public function option_page() {
-		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) self::set_status();
+		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+			$response = self::set_status();
+		}
 		require_once 'assets/views/option-page-view.php';
 	}
 	

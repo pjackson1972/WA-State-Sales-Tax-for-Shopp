@@ -9,6 +9,15 @@ if ( !empty( $_POST['wadbt_status'] ) ) {
 	<div id="icon-edit" class="icon32"></div>
 	<h2>WA State Sales Tax for Shopp Settings</h2>
 	<div id="options-wrapper">
+	<?php
+	if ( !empty( $_POST ) ) {
+		if ( true === $response ) {
+			echo '<div id="message" class="updated">Settings saved successfully</div>';
+		} else {
+			echo '<div id="message" class="error">Oops, there was an error saving settings.</div>';
+		}
+	}
+	?>
 		<form action="" method="post">
 			<h3>Washington Sales Tax:</h3>
 			<p>Enable to connect to the Washington Department of Revenue to lookup tax rates and calculate destination-based sales tax on the fly.</p>
