@@ -3,7 +3,7 @@
 **Donate link:** http://www.ivycat.com/contribute/  
 **Tags:** tax, taxes, destination based, sales tax, ecommerce, shopp, washington  
 **Requires at least:** 3.4  
-**Tested up to:** 3.6-beta4-24523  
+**Tested up to:** 3.6-beta4-24560  
 **Stable tag:** 1.1.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -67,6 +67,8 @@ Absolutely.  Please [contact us](http://www.ivycat.com/web-design/request-a-quot
 
 ### 1.1.0 ###
 *** Enhancement:** plugin forces zip entry for digital downloads.  
+* Updated alert styles in cart
+* Fixed version - last release should have been 1.1.0 due to new features
 
 ### 1.0.5 ###
 *** Bug fix:** plugin now allows taxing of digital downloads.  
