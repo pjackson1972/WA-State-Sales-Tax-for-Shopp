@@ -5,7 +5,7 @@
 	Author: IvyCat Web Services
 	Author URI: http://www.ivycat.com/wordpress/
 	Description: Connect Shopp with Washington State's Department of Revenue API for on-the-fly sales tax rate lookup and calculation.
-	Version: 1.1.0
+	Version: 1.1.1
 	License: GNU General Public License v2.0
 	License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
