@@ -16,7 +16,7 @@
 			}).on('click', function (e) {
 				e.preventDefault();
 			}).removeAttr('href').attr({
-				alt: 'You must enter a shipping zipcode before you can proceed to checkout!'
+				alt: 'You must enter a shipping zip code before you can proceed.'
 			});
 			$('.wataxerror').show();
 		}
